@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная страница</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="container">
+        <a href="/client/home">Новостной портал</a>
+        <nav class="nav justify-content-center">
+            <a class="nav-link" href="/client/newsCategoryPage">Посмотреть категории новостей</a>
+            <a class="nav-link" href="/logout">Выйти</a>
+        </nav>
+    </div>
+</header>
+<div class="container">
+    <h2 class="text-center mt-5 mb-3">Новости</h2>
+    <div class="row">
+        <div th:each="news : ${news}" class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${news.title}"></h5>
+                    <p class="card-text">Автор: <span th:text="${news.author.userLogin}"></span></p>
+                    <p class="card-text">Контент: <span th:text="${news.content}"></span></p>
+                    <p class="card-text">Лайки: <span th:text="${news.likes}"></span></p>
+                    <p class="card-text">Дизлайки: <span th:text="${news.dislikes}"></span></p>
+                    <p class="card-text">Дата создания: <span th:text="${news.creationDate}"></span></p>
+                    <a th:href="@{'/client/like/' + ${news.id}}" class="btn btn-success">Лайк</a>
+                    <a th:href="@{'/client/dislike/' + ${news.id}}" class="btn btn-danger">Дизлайк</a>
+                    <a th:href="@{'/client/newsComment/' + ${news.id}}" class="btn btn-info">Комментарии</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <p>Контактная информация:  +375447860021</p>
+    </div>
+</footer>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

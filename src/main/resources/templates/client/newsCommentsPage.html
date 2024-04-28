@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная страница</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="container">
+        <a href="/client/home">Новостной портал</a>
+        <nav class="nav justify-content-center">
+            <a class="nav-link" href="/client/newsCategoryPage">Посмотреть категории новостей</a>
+            <a class="nav-link" href="/logout">Выйти</a>
+        </nav>
+    </div>
+</header>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 mb-3">
+            <button id="sortByAuthorAsc" class="btn btn-primary mr-2">Сортировать по автору (А-Я)</button>
+            <button id="sortByAuthorDesc" class="btn btn-primary mr-2">Сортировать по автору (Я-А)</button>
+            <button id="sortByDateAsc" class="btn btn-primary">Сортировать по дате (по возрастанию)</button>
+            <button id="sortByDateDesc" class="btn btn-primary">Сортировать по дате (по убыванию)</button>
+        </div>
+    </div>
+    <h2 class="text-center mt-5 mb-3">Комментарии</h2>
+    <div class="row">
+        <div class="col-md-12">
+            <div th:each="comment : ${comments}" class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${comment.user.userLogin}"></h5>
+                    <p class="card-text" th:text="${comment.comment}"></p>
+                    <p class="card-text" th:text="${comment.commentDate}"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="text-center mt-5 mb-3">Оставить комментарий</h2>
+            <form method="post" th:action="@{/client/addComment}" th:object="${commentForm}">
+                <div class="form-group">
+                    <label for="comment">Комментарий:</label>
+                    <textarea class="form-control" id="comment" rows="3" name="comment"></textarea>
+                </div>
+                <input type="hidden" name="newsId" th:value="${newsId}" />
+                <button type="submit" class="btn btn-primary">Отправить</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <p>Контактная информация:  +375447860021</p>
+    </div>
+</footer>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    document.getElementById('sortByAuthorAsc').addEventListener('click', function() {
+        sortCommentsByAuthor(true);
+    });
+
+    document.getElementById('sortByAuthorDesc').addEventListener('click', function() {
+        sortCommentsByAuthor(false);
+    });
+
+    document.getElementById('sortByDateAsc').addEventListener('click', function() {
+        sortCommentsByDate(true);
+    });
+
+    document.getElementById('sortByDateDesc').addEventListener('click', function() {
+        sortCommentsByDate(false);
+    });
+
+    function sortCommentsByAuthor(ascending) {
+        var comments = document.querySelectorAll('.card');
+        var sortedComments = Array.from(comments).sort(function(a, b) {
+            var authorA = a.querySelector('.card-title').textContent.trim().toLowerCase();
+            var authorB = b.querySelector('.card-title').textContent.trim().toLowerCase();
+            if (ascending) {
+                return authorA.localeCompare(authorB);
+            } else {
+                return authorB.localeCompare(authorA);
+            }
+        });
+        var parent = comments[0].closest('.row');
+        parent.innerHTML = '';
+        sortedComments.forEach(function(comment) {
+            parent.appendChild(comment);
+        });
+    }
+
+    function sortCommentsByDate(ascending) {
+        var comments = document.querySelectorAll('.card');
+        var sortedComments = Array.from(comments).sort(function(a, b) {
+            var dateA = new Date(a.querySelector('.card-text:last-child').textContent.trim());
+            var dateB = new Date(b.querySelector('.card-text:last-child').textContent.trim());
+            if (ascending) {
+                return dateA - dateB;
+            } else {
+                return dateB - dateA;
+            }
+        });
+        var parent = comments[0].closest('.row');
+        parent.innerHTML = '';
+        sortedComments.forEach(function(comment) {
+            parent.appendChild(comment);
+        });
+    }
+</script>
+</body>
+</html>
