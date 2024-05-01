@@ -57,7 +57,12 @@ public class AdminController {
 
     @GetMapping("/deleteTheme/{id}")
     public String deleteTheme(@PathVariable("id") Long id) {
-        newsThemeRepository.deleteById(id);
+        try{
+            newsThemeRepository.deleteById(id);
+        }catch (Throwable e){
+            return "redirect:/admin/deleteTypeMessage";
+        }
+
         return "redirect:/admin/categoryListPage";
     }
 
@@ -75,7 +80,12 @@ public class AdminController {
 
     @GetMapping("/deleteNews/{id}")
     public String deleteNews(@PathVariable("id") Long id) {
-        newsRepository.deleteById(id);
+        try{
+            newsRepository.deleteById(id);
+        }catch (Throwable e){
+            return "redirect:/admin/deleteTypeMessage";
+        }
+
         return "redirect:/admin/newsListPage";
     }
 
@@ -88,6 +98,10 @@ public class AdminController {
     public String usersListPage(Model model) {
         model.addAttribute("users", userRepository.findAll());
         return "admin/userListPage";
+    }
+    @GetMapping("/deleteTypeMessage")
+    public String deleteTypeMessage() {
+        return "/error/deleteTypeMessage";
     }
 
     @GetMapping("/updateNews/{id}")
